@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 516 324" width="516" height="324" role="img" aria-label="Fibonacci squares 1, 1, 2, 3, 5, 8, 13 with the golden spiral">
+<g fill="none" stroke="#8b949e" stroke-width="1">
+<rect x="366" y="78" width="24" height="24"/>
+<rect x="366" y="102" width="24" height="24"/>
+<rect x="318" y="78" width="48" height="48"/>
+<rect x="318" y="6" width="72" height="72"/>
+<rect x="390" y="6" width="120" height="120"/>
+<rect x="318" y="126" width="192" height="192"/>
+<rect x="6" y="6" width="312" height="312"/>
+</g>
+<path d="M 366 78 A 24 24 0 0 1 390 102 A 24 24 0 0 1 366 126 A 48 48 0 0 1 318 78 A 72 72 0 0 1 390 6 A 120 120 0 0 1 510 126 A 192 192 0 0 1 318 318 A 312 312 0 0 1 6 6" fill="none" stroke="#3b82c4" stroke-width="2" stroke-linecap="round"/>
+<g fill="#8b949e" font-family="Georgia, 'Times New Roman', serif" text-anchor="middle" dominant-baseline="central">
+<text x="342.0" y="102.0" font-size="12.8">2</text>
+<text x="354.0" y="42.0" font-size="14.3">3</text>
+<text x="450.0" y="66.0" font-size="17.0">5</text>
+<text x="414.0" y="222.0" font-size="20.6">8</text>
+<text x="162.0" y="162.0" font-size="26.1">13</text>
+</g></svg>

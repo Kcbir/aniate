@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aniate"
+version = "2.0.2"
+description = "Approximate Numerics in Applied Transition Environments: define, simulate, check, solve and plot MDPs and non-Markovian decision problems."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Kabir Murjani" }]
+keywords = ["mdp", "reinforcement-learning", "markov-decision-process", "simulation",
+            "non-markovian", "reward-machine", "gym", "dynamic-programming", "monte-carlo"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Mathematics",
+]
+dependencies = ["numpy>=1.24", "scipy>=1.12"]
+
+[project.optional-dependencies]
+vis = ["matplotlib>=3.8"]
+test = ["pytest>=7", "hypothesis>=6"]
+dev = ["aniate[vis,test]"]
+
+[project.urls]
+Homepage = "https://aniate.com"
+Documentation = "https://github.com/Kcbir/aniate/blob/main/tree.md"
+Source = "https://github.com/Kcbir/aniate"
+Issues = "https://github.com/Kcbir/aniate/issues"
+Releases = "https://github.com/Kcbir/aniate/releases"
+
+[project.scripts]
+aniate = "aniate.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["aniate*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["error::UserWarning"]
