@@ -139,6 +139,11 @@ class Mealy:
                 "events": list(self.events), "accepting": sorted(self.accepting),
                 "meaning": dict(self.meaning)}
 
+    def _repr_html_(self):
+        from aniate.notebook import to_html
+
+        return to_html(self)
+
     def __repr__(self):
         return f"Mealy({self.name!r}, {len(self.states)} states, events={list(self.events)})"
 

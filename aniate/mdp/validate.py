@@ -66,6 +66,11 @@ class ValidationReport:
         return {"kind": "ValidationReport", "ok": self.ok, "errors": len(self.errors),
                 "warnings": len(self.warnings), "issues": [i.describe() for i in self.issues]}
 
+    def _repr_html_(self):
+        from aniate.notebook import to_html
+
+        return to_html(self)
+
     def __repr__(self):
         if not self.issues:
             return "ValidationReport: clean"
@@ -105,7 +110,7 @@ def validate(m, raise_on_error=False):
 
     bad = []
     for a in range(m.A):
-        rows = np.repeat(np.arange(m.S), np.diff(m.P[a].indptr))
+        rows = np.repeat(np.arange(m.S), np.diff(m.P[a].indptr).astype(np.intp))
         nf = ~np.isfinite(m.P[a].data) | ~np.isfinite(m.r_next[a])
         bad += [_sa(m, int(rows[k]), a) for k in np.flatnonzero(nf)]
     if not np.all(np.isfinite(m.R)) and not bad:
@@ -118,7 +123,7 @@ def validate(m, raise_on_error=False):
 
     neg, dead, off = [], [], []
     for a in range(m.A):
-        rows = np.repeat(np.arange(m.S), np.diff(m.P[a].indptr))
+        rows = np.repeat(np.arange(m.S), np.diff(m.P[a].indptr).astype(np.intp))
         for k in np.flatnonzero(m.P[a].data < 0):
             neg.append(f"{_sa(m, int(rows[k]), a)}: {m.P[a].data[k]:.4g}")
         sums = np.asarray(m.P[a].sum(axis=1)).ravel()

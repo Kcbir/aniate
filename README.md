@@ -21,13 +21,14 @@
 
 Reference implementation of aniate, a Python library for finite decision problems: Markov decision processes and problems whose reward depends on the history of the episode.
 
-A problem is specified by its states, actions, transition probabilities, rewards and discount factor. The specification is validated at construction, and a model is rejected when a probability row does not sum to one, when a terminal state continues to move or to accrue reward, or when its value is unbounded. The library computes optimal policies together with their exact values, simulates episodes in batches, and compares any external simulator with the model through per-transition chi-square tests and the value martingale `M_t = G_<t + γ^t V(s_t)`. History-dependent objectives are expressed with event labels and a Mealy automaton, and the exact product model is solved. Every operation writes one structured log line, and every figure is saved as a PDF with embedded Computer Modern fonts.
+A problem is specified by its states, actions, transition probabilities, rewards and discount factor. The specification is validated at construction, and a model is rejected when a probability row does not sum to one, when a terminal state continues to move or to accrue reward, or when its value is unbounded. The library computes optimal policies together with their exact values, simulates episodes in batches, and compares any external simulator with the model through per-transition chi-square tests and the value martingale `M_t = G_<t + γ^t V(s_t)`. History-dependent objectives are expressed with event labels and a Mealy automaton, and the exact product model is solved. Every operation writes one structured log line, and every figure is saved as a PDF with embedded Computer Modern fonts. The library can be run in a web browser, without installation, at [aniate.com/playground](https://aniate.com/playground).
 
 ## Installation
 
 ```bash
 pip install aniate            # numpy and scipy
 pip install 'aniate[vis]'     # adds matplotlib, required for plots
+pip install 'aniate[gym]'     # adds gymnasium, required for aniate.gym
 ```
 
 ## Verifying the installation
@@ -40,7 +41,7 @@ ant()
 `ant()` prints the Fibonacci drawing, the installed version of Python and of each dependency, and the result of a self-test that builds, solves, simulates and checks a small model. It returns `True` when aniate is working. The same report is printed by `python -m aniate`.
 
 ```
-aniate 2.0.2   Approximate Numerics in Applied Transition Environments
+aniate 2.1.0   Approximate Numerics in Applied Transition Environments
 
 python      3.12.4      ok             required, 3.10 or later
 numpy       2.1.0       ok             required, 1.24 or later
@@ -48,6 +49,7 @@ scipy       1.14.1      ok             required, 1.12 or later
 matplotlib  -           not installed  optional, for plots in aniate.vis
 pytest      -           not installed  optional, for running the tests
 hypothesis  -           not installed  optional, for property-based tests
+gymnasium   -           not installed  optional, for the Gymnasium adapter in aniate.gym
 
 self-test   model valid | solved, value 3.20876 | 2,000 episodes simulated | check passed | 13 ms
             plots unavailable; install them with: pip install 'aniate[vis]'
@@ -111,6 +113,24 @@ policy = task.solve()        # a MemoryPolicy: policy.step(state) returns the ne
 
 `nmdp.Ordering`, `nmdp.Budget` and `nmdp.Deadline` cover common patterns, and `nmdp.Mealy` expresses any finite-memory rule.
 
+## Notebooks
+
+In Jupyter, a model, solution, set of episodes, check report, automaton or non-Markovian task that ends a cell is displayed as a table. A long table is shortened, and the number of omitted rows is stated.
+
+## Gymnasium
+
+```python
+from aniate import gym
+
+env = gym.make(m)                               # a gymnasium.Env with Discrete spaces
+obs, info = env.reset(seed=0)
+obs, reward, terminated, truncated, info = env.step(env.action_space.sample())
+
+gym.register("aniate/Corridor-v0", lambda: m)   # gymnasium.make("aniate/Corridor-v0") then builds it
+```
+
+Transitions are sampled from the model with the seeded generator of Gymnasium, so equal seeds give equal episodes, and the environment passes the Gymnasium environment checker. The adapter requires `pip install 'aniate[gym]'`.
+
 ## Interface
 
 | call | purpose |
@@ -125,6 +145,7 @@ policy = task.solve()        # a MemoryPolicy: policy.step(state) returns the ne
 | `m.env()` | a Gym-style environment with `reset` and `step` |
 | `an.check(m, env=simulator, policy=)` | statistical comparison of a simulator with the model |
 | `an.NMDP(world, labels, automaton)` | a problem whose reward depends on history |
+| `gym.make(m)`, `gym.register(id, model)` | the model as a Gymnasium environment |
 | `vis.overview(runs)`, `vis.graph(m)`, `vis.grid(m, sol)` | plots; `vis.save(fig, "name.pdf")` writes a PDF |
 | `obj.describe()` | a JSON-compatible summary of any model, solution, report or set of episodes |
 | `an.verbosity("quiet")` | set the log level |
@@ -154,7 +175,7 @@ Importing aniate prints a Fibonacci rectangle to standard error once per process
   author  = {Murjani, Kabir},
   title   = {aniate: Approximate Numerics in Applied Transition Environments},
   year    = {2026},
-  version = {2.0.2},
+  version = {2.1.0},
   url     = {https://github.com/Kcbir/aniate}
 }
 ```

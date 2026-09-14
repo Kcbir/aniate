@@ -84,6 +84,11 @@ class MemoryPolicy:
             d["states_where_memory_changes_the_action"] = self.product.policy_disagreements(self._flat)[1]
         return d
 
+    def _repr_html_(self):
+        from aniate.notebook import to_html
+
+        return to_html(self)
+
     def __repr__(self):
         extra = ""
         if self.table.ndim == 2:

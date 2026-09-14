@@ -23,7 +23,8 @@ PYTHON = "3.10"
 REQUIRED = [("numpy", "1.24"), ("scipy", "1.12")]
 OPTIONAL = [("matplotlib", "3.8", "plots in aniate.vis"),
             ("pytest", "7", "running the tests"),
-            ("hypothesis", "6", "property-based tests")]
+            ("hypothesis", "6", "property-based tests"),
+            ("gymnasium", "0.29", "the Gymnasium adapter in aniate.gym")]
 
 
 def _parse(version):

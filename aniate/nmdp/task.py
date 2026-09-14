@@ -110,6 +110,11 @@ class NMDP:
                 "machine": self.machine.describe(), "combine": self.combine,
                 "product_states": self.product.S}
 
+    def _repr_html_(self):
+        from aniate.notebook import to_html
+
+        return to_html(self)
+
     def __repr__(self):
         return (f"NMDP(world S={self.world.S}, memory Q={len(self.machine)}, "
                 f"A={self.world.A}, machine={self.machine.name!r})")

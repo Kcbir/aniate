@@ -9,14 +9,14 @@ from aniate import ant
 ant()                 # or, from a shell: python -m aniate
 ```
 
-`ant()` lists Python, the required dependencies (numpy, scipy) and the optional ones (matplotlib, pytest, hypothesis) with their installed versions. It then builds, solves, simulates and checks a five-state model, and writes a PDF plot when matplotlib is present. The last line is either `aniate is working.` or a statement that a component failed, and the function returns `True` or `False` accordingly.
+`ant()` lists Python, the required dependencies (numpy, scipy) and the optional ones (matplotlib, pytest, hypothesis, gymnasium) with their installed versions. It then builds, solves, simulates and checks a five-state model, and writes a PDF plot when matplotlib is present. The last line is either `aniate is working.` or a statement that a component failed, and the function returns `True` or `False` accordingly.
 
 | report status | meaning | action |
 |---|---|---|
 | `ok` | installed at a supported version | none |
 | `missing` | a required dependency is absent | `pip install aniate` |
 | `too old` | installed below the minimum version | upgrade the named package |
-| `not installed` | an optional dependency is absent | `pip install 'aniate[vis]'` for plots, `pip install 'aniate[test]'` for tests |
+| `not installed` | an optional dependency is absent | `pip install 'aniate[vis]'` for plots, `pip install 'aniate[test]'` for tests, `pip install 'aniate[gym]'` for the Gymnasium adapter |
 
 ## 1. Decision tree
 
@@ -45,6 +45,8 @@ What is known about the problem?
 │       ├── values at each time step ........................ an.mdp.values_by_time(m, policy, T)
 │       ├── sampled episodes and their statistics ........... an.simulate(m, policy, episodes)
 │       ├── one step at a time, Gym style ................... m.env()
+│       ├── a Gymnasium environment ......................... aniate.gym.make(m)
+│       ├── a table in a notebook ........................... end a Jupyter cell with the object
 │       └── a picture ....................................... aniate.vis (section 5)
 │
 └── Only a simulator exists (a program, a Gym environment, a physical system)
@@ -127,6 +129,8 @@ aniate/
 ├── __main__.py        python -m aniate
 ├── art.py             import banner
 ├── log.py             log lines, verbosity, capture
+├── notebook.py        HTML tables for notebooks, used by _repr_html_
+├── gym.py             Gymnasium adapter: make, register, AniateEnv
 ├── mdp/
 │   ├── space.py       label <-> index mapping
 │   ├── core.py        MDP: storage, lookups, describe
@@ -169,6 +173,7 @@ The public interface is the set of names exported by `aniate`, `aniate.nmdp` and
 | a new standard problem | `aniate/problems/` | return an `MDP` that passes validation |
 | a new plot | `aniate/vis/` | accept `ax=`, return the Axes, use the helpers in `style.py`, never call `show()` |
 | a new check | `aniate/mdp/check.py` | report an `Issue` with a short code and the states involved |
+| a notebook display for a result object | `aniate/notebook.py`, and a `_repr_html_` method on the class | escape every label and state how many rows were omitted |
 | a new worked example | `tests/<name>/` | a model module, a `test_<name>.py`, and optionally a `plot.py` |
 
 Conventions that every addition follows:

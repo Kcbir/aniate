@@ -62,7 +62,9 @@ def _as_csr_list(P):
 
 def _entries(m):
     """(rows, cols) of every stored entry of a canonical CSR array, in data order."""
-    rows = np.repeat(np.arange(m.shape[0]), np.diff(m.indptr))
+    # np.repeat needs counts in the platform integer; indptr may be int64 on 32-bit
+    # builds such as Pyodide, where that cast is refused.
+    rows = np.repeat(np.arange(m.shape[0]), np.diff(m.indptr).astype(np.intp))
     return rows, m.indices
 
 
@@ -376,6 +378,11 @@ class MDP:
             "valid": None if self.report is None else self.report.ok,
             "issues": [] if self.report is None else [i.describe() for i in self.report.issues],
         }
+
+    def _repr_html_(self):
+        from aniate.notebook import to_html
+
+        return to_html(self)
 
     def __repr__(self):
         h = "inf" if self.horizon is None else self.horizon

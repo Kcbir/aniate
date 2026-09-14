@@ -97,6 +97,11 @@ class CheckReport:
         return {"kind": "CheckReport", "ok": self.ok, "stats": stats,
                 "issues": [i.describe() for i in self.issues]}
 
+    def _repr_html_(self):
+        from aniate.notebook import to_html
+
+        return to_html(self)
+
     def __repr__(self):
         st = self.stats
         head = "PASSED" if self.ok else f"FAILED ({len(self.issues)} issue(s))"

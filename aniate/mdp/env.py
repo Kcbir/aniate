@@ -374,6 +374,11 @@ class Episodes:
             "truncation_bias": self.truncation_bias,
         }
 
+    def _repr_html_(self):
+        from aniate.notebook import to_html
+
+        return to_html(self)
+
     def __repr__(self):
         return (f"Episodes({len(self):,} episodes: mean return {self.mean_return:.5g} "
                 f"+/- {self.stderr:.2g} s.e., mean length {self.lengths.mean():.1f}, "
@@ -419,7 +424,7 @@ def _run_batched(m, pol, N, T, rng, start):
     keys, dead = [], []
     for a in range(m.A):
         P = m.P[a]
-        counts = np.diff(P.indptr)
+        counts = np.diff(P.indptr).astype(np.intp)
         totals = np.asarray(P.sum(axis=1)).ravel()
         cum = np.cumsum(P.data)
         row_start = np.concatenate([[0.0], cum])[P.indptr[:-1]]

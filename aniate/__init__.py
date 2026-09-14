@@ -19,7 +19,7 @@ from aniate.mdp import MDP, Builder, Env, check, evaluate, from_functions, simul
 from aniate.nmdp import NMDP  # noqa: E402
 from aniate.selfcheck import ant  # noqa: E402
 
-__version__ = "2.0.2"
+__version__ = "2.1.0"
 
 __all__ = ["ant", "MDP", "NMDP", "Builder", "from_functions", "Env", "simulate", "check",
            "solve", "evaluate", "verbosity", "log", "mdp", "nmdp", "problems", "__version__"]

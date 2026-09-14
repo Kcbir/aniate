@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aniate"
-version = "2.0.2"
+version = "2.1.0"
 description = "Approximate Numerics in Applied Transition Environments: define, simulate, check, solve and plot MDPs and non-Markovian decision problems."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -12,7 +12,7 @@ license = "MIT"
 license-files = ["LICENSE"]
 authors = [{ name = "Kabir Murjani" }]
 keywords = ["mdp", "reinforcement-learning", "markov-decision-process", "simulation",
-            "non-markovian", "reward-machine", "gym", "dynamic-programming", "monte-carlo"]
+            "non-markovian", "reward-machine", "gym", "gymnasium", "jupyter", "dynamic-programming", "monte-carlo"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Science/Research",
@@ -32,7 +32,8 @@ dependencies = ["numpy>=1.24", "scipy>=1.12"]
 [project.optional-dependencies]
 vis = ["matplotlib>=3.8"]
 test = ["pytest>=7", "hypothesis>=6"]
-dev = ["aniate[vis,test]"]
+gym = ["gymnasium>=0.29"]
+dev = ["aniate[vis,test,gym]"]
 
 [project.urls]
 Homepage = "https://aniate.com"

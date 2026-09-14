@@ -86,6 +86,11 @@ class Solution:
                 d["action_counts"] = {str(m.actions[a]): int(counts[a]) for a in range(m.A)}
         return d
 
+    def _repr_html_(self):
+        from aniate.notebook import to_html
+
+        return to_html(self)
+
     def __repr__(self):
         from aniate.mdp.text import state_str
 
