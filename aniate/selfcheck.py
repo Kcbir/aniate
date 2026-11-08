@@ -100,7 +100,7 @@ def ant(stream=None):
     if not art.shown:                       # importing aniate may already have drawn it
         out.write(art.ART.lstrip("\n"))
     write()
-    write(f"aniate {__version__}   Approximate Numerics in Applied Transition Environments")
+    write(f"aniate {__version__}   Open source combinatorics solvers")
     write()
 
     python = ".".join(str(x) for x in sys.version_info[:3])

@@ -4,14 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aniate"
-version = "2.1.0"
-description = "Approximate Numerics in Applied Transition Environments: define, simulate, check, solve and plot MDPs and non-Markovian decision problems."
+version = "2.2.0"
+description = "Open source combinatorics solvers: cube and ncube for routing, mdp and nmdp for decisions."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [{ name = "Kabir Murjani" }]
-keywords = ["mdp", "reinforcement-learning", "markov-decision-process", "simulation",
+keywords = ["combinatorial-optimization", "routing", "tsp", "travelling-thief-problem", "drone", "mdp", "reinforcement-learning", "markov-decision-process", "simulation",
             "non-markovian", "reward-machine", "gym", "gymnasium", "jupyter", "dynamic-programming", "monte-carlo"]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -33,6 +33,8 @@ dependencies = ["numpy>=1.24", "scipy>=1.12"]
 vis = ["matplotlib>=3.8"]
 test = ["pytest>=7", "hypothesis>=6"]
 gym = ["gymnasium>=0.29"]
+neural = ["torch>=2.1"]
+milp = ["gurobipy>=11"]
 dev = ["aniate[vis,test,gym]"]
 
 [project.urls]

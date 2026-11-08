@@ -1,4 +1,13 @@
-"""Finite Markov decision processes: define, inspect, simulate, check, solve."""
+"""Finite Markov decision processes: define, inspect, simulate, check, solve.
+
+    from aniate import mdp
+
+    model = mdp(states, actions, transition, reward, gamma=0.9)
+    best = model.solve()
+"""
+
+import sys
+from types import ModuleType
 
 from aniate.mdp.builder import Builder, from_functions
 from aniate.mdp.check import CheckReport, check
@@ -21,3 +30,12 @@ __all__ = [
     "solve", "evaluate", "values_by_time", "policy_iteration", "value_iteration",
     "backward_induction", "Solution",
 ]
+
+
+class _Callable(ModuleType):
+    def __call__(self, *args, **kwargs):
+        """Build a model: the same as `from_functions`."""
+        return from_functions(*args, **kwargs)
+
+
+sys.modules[__name__].__class__ = _Callable

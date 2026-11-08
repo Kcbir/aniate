@@ -2,6 +2,37 @@
 
 This guide shows which part of aniate to use for a given task, how the package is organised, and where new functionality belongs.
 
+## Choosing a solver
+
+| The problem | Use |
+|---|---|
+| a truck, a drone, a knapsack, or any of the three | `ncube`, `cube` or `cube.milp` |
+| decisions under chance, where only the present matters | `mdp` |
+| decisions under chance, where what already happened matters | `nmdp` |
+
+All four are imported with `from aniate import cube, ncube, mdp, nmdp`.
+
+## NCube and Cube: neural accelerator, metaheuristic or exact model
+
+All three take the same inputs and return the same plan, and leaving out the items or the drone gives a TSP-D, a TTP or a TSP.
+
+| Situation | Use | Why |
+|---|---|---|
+| a small problem that needs a proof of optimality | `cube.milp` | in the paper it certifies the optimum at 5 and 10 customers |
+| up to about 40 customers | `cube` | in the paper it leads on a280 through 40 customers |
+| around 50 customers | `ncube` | on a280 at 50 customers it sits 0.43% from the best known objective, against 12.02% |
+| a tight drone endurance | `cube` | on ttd300 it leads at every size but 75 customers |
+| no PyTorch, or Julia | `cube` | it needs only Python or Julia; the network is Python only |
+| many similar problems | `ncube.train`, then `ncube` | training is paid once |
+
+`cube` improves with `seconds`: the default is half a second per customer, and the paper gives it 15. `ncube` has no budget to set. It downloads the closest trained size once. Handing its plan to the search is not offered, because the paper found no gain from it at equal time.
+
+`cube.milp` needs Gurobi, installed with `pip install 'aniate[milp]'`. It stops at `seconds`, one hour by default, and `plan.gap` reports how far the result may be from the optimum; a gap of 0 means it is proved optimal.
+
+To train, `ncube.train(30)` makes random problems of 30 customers, or `ncube.train(my_problems)` takes a list of `(nodes, profits, weights)`, all one size. Each is solved with the metaheuristic, and the network learns to imitate the plans. Pass the result, or a file saved with `save=`, as `network=`.
+
+The rest of this guide covers `mdp` and `nmdp`.
+
 ## 0. Verifying the installation
 
 ```python
@@ -26,13 +57,13 @@ What is known about the problem?
 ├── The transition probabilities and rewards are known
 │   │
 │   ├── How is the model written?
-│   │   ├── as Python functions s, a -> {s2: p} ............ an.from_functions
-│   │   ├── as a list of individual transitions ............ an.Builder
-│   │   └── as arrays or sparse matrices ................... an.MDP(P, R, gamma)
+│   │   ├── as Python functions s, a -> {s2: p} ............ mdp
+│   │   ├── as a list of individual transitions ............ mdp.Builder
+│   │   └── as arrays or sparse matrices ................... mdp.MDP(P, R, gamma)
 │   │
 │   ├── Does the reward or a constraint depend on history?
 │   │   ├── no .............................................. use the MDP directly
-│   │   └── yes ............................................. nmdp.Labels + an automaton + an.NMDP
+│   │   └── yes ............................................. nmdp.Labels + an automaton + nmdp
 │   │       ├── "A before B before C" ....................... nmdp.Ordering
 │   │       ├── "at most k uses of a resource" .............. nmdp.Budget
 │   │       ├── "finish within T steps" ..................... nmdp.Deadline
@@ -41,9 +72,9 @@ What is known about the problem?
 │   │
 │   └── What is needed?
 │       ├── the optimal policy .............................. m.solve()
-│       ├── the exact value of a given policy ............... an.evaluate(m, policy)
-│       ├── values at each time step ........................ an.mdp.values_by_time(m, policy, T)
-│       ├── sampled episodes and their statistics ........... an.simulate(m, policy, episodes)
+│       ├── the exact value of a given policy ............... mdp.evaluate(m, policy)
+│       ├── values at each time step ........................ mdp.values_by_time(m, policy, T)
+│       ├── sampled episodes and their statistics ........... mdp.simulate(m, policy, episodes)
 │       ├── one step at a time, Gym style ................... m.env()
 │       ├── a Gymnasium environment ......................... aniate.gym.make(m)
 │       ├── a table in a notebook ........................... end a Jupyter cell with the object
@@ -51,7 +82,7 @@ What is known about the problem?
 │
 └── Only a simulator exists (a program, a Gym environment, a physical system)
     └── Write down the model believed to describe it, then call
-        an.check(model, env=simulator, policy=...)
+        mdp.check(model, env=simulator, policy=...)
         A failed check names the state-action pairs whose behaviour disagrees with the model.
 ```
 
@@ -59,10 +90,10 @@ What is known about the problem?
 
 | situation | call | notes |
 |---|---|---|
-| Transitions are easiest to state as a function | `an.from_functions(states, actions, transition, reward, gamma, terminal=, initial=)` | `reward` may take `(s, a)` or `(s, a, s2)`; `terminal` may be a list or a predicate |
-| Transitions come from data or a table | `an.Builder(gamma).transition(s, a, s2, prob=, reward=)` | finish with `.build(missing="error")` or `.build(missing="stay")` |
-| Matrices already exist | `an.MDP(P, R, gamma, states=, actions=)` | `P[a][s, s2]`; `R` may be `(S, A)`, `(S, A, S)` or per-action matrices |
-| A standard test problem is sufficient | `an.problems.gridworld()`, `chain()`, `river_swim()`, `inventory()` | |
+| Transitions are easiest to state as a function | `mdp(states, actions, transition, reward, gamma, terminal=, initial=)` | `reward` may take `(s, a)` or `(s, a, s2)`; `terminal` may be a list or a predicate |
+| Transitions come from data or a table | `mdp.Builder(gamma).transition(s, a, s2, prob=, reward=)` | finish with `.build(missing="error")` or `.build(missing="stay")` |
+| Matrices already exist | `mdp.MDP(P, R, gamma, states=, actions=)` | `P[a][s, s2]`; `R` may be `(S, A)`, `(S, A, S)` or per-action matrices |
+| A standard test problem is sufficient | `problems.gridworld()`, `chain()`, `river_swim()`, `inventory()` | |
 | A fixed number of steps | pass `horizon=T` | solved by backward induction |
 
 States and actions may be any hashable labels, for example `"ok"`, `3` or `(2, 1)`. Every public function accepts labels.
@@ -81,14 +112,14 @@ A method can be forced with `m.solve(method="value_iteration")`. `Solution.value
 
 | goal | call |
 |---|---|
-| many episodes, fast | `an.simulate(m, policy, episodes=10_000, seed=0)` |
+| many episodes, fast | `mdp.simulate(m, policy, episodes=10_000, seed=0)` |
 | mean return with its standard error | `runs.mean_return`, `runs.stderr` |
 | exact value for comparison | `runs.model_value` |
 | does the simulation agree with the model's values? | `runs.martingale()`: its column means should stay at `model_value` |
 | fraction of time spent in each state | `runs.occupancy()` |
 | a single episode | `runs[i]`, or `m.env()` with `reset` and `step` |
-| test an external simulator | `an.check(m, env=sim, policy=pi)`, then `report.ok` and `report.issues` |
-| an observation that is not a model label | `an.check(..., state=lambda obs: label)` |
+| test an external simulator | `mdp.check(m, env=sim, policy=pi)`, then `report.ok` and `report.issues` |
+| an observation that is not a model label | `mdp.check(..., state=lambda obs: label)` |
 
 Accepted policy forms: `None` (uniform random), a `Solution`, an array of action indices `(S,)` or `(T, S)`, a probability array `(S, A)`, a dict `{state: action}`, a function `f(state) -> action`, a `MemoryPolicy`, or any object with a `step(state)` method. The last form can be simulated but not evaluated exactly.
 
@@ -124,7 +155,7 @@ All plots require `pip install 'aniate[vis]'`. Each accepts `ax=` and returns th
 
 ```
 aniate/
-├── __init__.py        public names: ant, MDP, NMDP, Builder, from_functions, Env, simulate, check, solve, evaluate
+├── __init__.py        public names: ant, cube, ncube, mdp, nmdp, MDP, NMDP, Builder, from_functions, Env, simulate, check, solve, evaluate
 ├── selfcheck.py       ant: installation report and self-test
 ├── __main__.py        python -m aniate
 ├── art.py             import banner
@@ -149,6 +180,12 @@ aniate/
 │   ├── product.py     product of a world model and an automaton
 │   ├── policy.py      MemoryPolicy
 │   └── task.py        NMDP
+├── route/
+│   ├── __init__.py    cube, cube.milp, cube.env, ncube, ncube.train, Plan, defaults
+│   ├── core.py        the plan evaluator, drone scheduler and moves
+│   ├── metaheuristic.py  the metaheuristic
+│   ├── exact.py       the exact model, solved with Gurobi
+│   └── network/       the neural accelerator and the simulator: model, decoding, training, cube.env
 ├── problems/          gridworld, chain, river_swim, inventory
 └── vis/
     ├── style.py       fonts, colours, save
