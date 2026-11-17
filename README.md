@@ -20,7 +20,7 @@
 ---
 
 ```python
-from aniate import cube, ncube, mdp, nmdp
+from aniate import cube, ncube, mdp, nmdp, superpermutations
 ```
 
 | Solver | Solves | Call |
@@ -30,6 +30,7 @@ from aniate import cube, ncube, mdp, nmdp
 | **cube.milp** | the TTP-D with the exact model | `cube.milp(nodes, profits, weights, drone=True)` |
 | **MDP** | decisions where only the present matters | `mdp(states, actions, transition, reward).solve()` |
 | **NMDP** | decisions where the past matters | `nmdp(world, labels, rule).solve()` |
+| **superpermutations** | short words that hold every ordering of n symbols | `superpermutations(5)` |
 
 ## Cube and NCube
 
@@ -77,6 +78,22 @@ The decision solvers work with finite problems: Markov decision processes in `md
 
 A problem is specified by its states, actions, transition probabilities, rewards and discount factor. The specification is validated at construction, and a model is rejected when a probability row does not sum to one, when a terminal state continues to move or to accrue reward, or when its value is unbounded. The library computes optimal policies together with their exact values, simulates episodes in batches, and compares any external simulator with the model through per-transition chi-square tests and the value martingale `M_t = G_<t + γ^t V(s_t)`. History-dependent objectives are expressed with event labels and a Mealy automaton, and the exact product model is solved. Every operation writes one structured log line, and every figure is saved as a PDF with embedded Computer Modern fonts.
 
+## Superpermutations
+
+A superpermutation on n symbols is a word that contains every ordering of the symbols as n consecutive letters. The solver cuts a word in a few places around a costly step and places the pieces between the cuts in their best order exactly, by dynamic programming over subsets. It works on the orderings of a word held as text, and on the segments of a word in the Detour format of the [Superpermutation Almanac](https://superpermutations.com), which is never written out in full. Applied to the segments of the record for 14 symbols, it produced W-0110 and W-0111, the records of November 2026.
+
+```python
+from aniate import superpermutations
+
+word = superpermutations(5)                                # 153 letters, the shortest possible
+superpermutations(6, start="random")                       # the search, from a random order
+superpermutations.check(word)                              # every window scanned
+superpermutations.improve("W-0108.detour", seconds=600)    # exact chains on the segments of a Detour file
+superpermutations.write(word, "word.detour")               # the Almanac's format
+```
+
+The search is compiled with numba when `aniate[fast]` is installed, and runs as plain Python otherwise.
+
 ## Installation
 
 ```bash
@@ -85,6 +102,7 @@ pip install 'aniate[vis]'     # adds matplotlib, required for plots
 pip install 'aniate[gym]'     # adds gymnasium, required for aniate.gym
 pip install 'aniate[neural]'  # adds PyTorch, required for the neural accelerator
 pip install 'aniate[milp]'    # adds Gurobi, required for the exact model
+pip install 'aniate[fast]'    # adds numba, for a faster superpermutation search
 ```
 
 For Julia, `cube` is one call too:
