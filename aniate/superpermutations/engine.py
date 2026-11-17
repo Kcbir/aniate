@@ -1,14 +1,5 @@
-"""Exact chains on a route of orderings.
+"""The search over a route of orderings."""
 
-The route is an array of ordering numbers, and the word is the route written with the fewest letters
-between neighbours. A chain is a set of cuts between neighbouring stops. The cuts split the route into
-pieces; the first and last piece stay where they are, and the pieces between them are put in their best
-order by dynamic programming over subsets, so the answer is exact for that set of cuts. A piece that is
-one whole rotation class is a ring: it may be entered at any of its n orderings, and the entry is part of
-the programme's state.
-
-Nothing here estimates. A change is applied only when the exact letter count says so.
-"""
 import numpy as np
 
 from ._jit import jit

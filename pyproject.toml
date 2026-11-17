@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aniate"
-version = "2.3.0"
-description = "Open source combinatorics solvers: cube and ncube for routing, mdp and nmdp for decisions, and superpermutations."
+version = "2.3.1"
+description = "Open source combinatorics solvers: the superpermutation solver behind the world record for 14 symbols, cube and ncube for routing, mdp and nmdp for decisions."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"

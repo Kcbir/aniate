@@ -22,7 +22,7 @@ from aniate.nmdp import NMDP  # noqa: E402
 from aniate.route import Plan, cube, ncube  # noqa: E402
 from aniate.selfcheck import ant  # noqa: E402
 
-__version__ = "2.3.0"
+__version__ = "2.3.1"
 
 __all__ = ["ant", "cube", "ncube", "Plan", "MDP", "NMDP", "Builder", "from_functions", "Env", "simulate", "check",
            "solve", "evaluate", "verbosity", "log", "mdp", "nmdp", "problems", "superpermutations", "__version__"]

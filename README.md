@@ -4,6 +4,8 @@
 
 *Open source combinatorics solvers*
 
+**World record for superpermutations on 14 symbols: [W-0111](https://superpermutations.com/w/W-0111), 93,904,779,622 letters, Kabir Murjani, 17 November 2026**
+
 [![pypi](https://img.shields.io/pypi/v/aniate?label=pypi&logo=pypi&logoColor=white&color=3775A9)](https://pypi.org/project/aniate/)
 [![python](https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![tests](https://img.shields.io/github/actions/workflow/status/Kcbir/aniate/test.yml?branch=main&label=tests&logo=github)](https://github.com/Kcbir/aniate/actions/workflows/test.yml)
@@ -30,7 +32,7 @@ from aniate import cube, ncube, mdp, nmdp, superpermutations
 | **cube.milp** | the TTP-D with the exact model | `cube.milp(nodes, profits, weights, drone=True)` |
 | **MDP** | decisions where only the present matters | `mdp(states, actions, transition, reward).solve()` |
 | **NMDP** | decisions where the past matters | `nmdp(world, labels, rule).solve()` |
-| **superpermutations** | short words that hold every ordering of n symbols | `superpermutations(5)` |
+| **superpermutations** | short words that hold every ordering of n symbols; the solver behind the world record for 14 symbols | `superpermutations(5)` |
 
 ## Cube and NCube
 
@@ -80,7 +82,7 @@ A problem is specified by its states, actions, transition probabilities, rewards
 
 ## Superpermutations
 
-A superpermutation on n symbols is a word that contains every ordering of the symbols as n consecutive letters. The solver cuts a word in a few places around a costly step and places the pieces between the cuts in their best order exactly, by dynamic programming over subsets. It works on the orderings of a word held as text, and on the segments of a word in the Detour format of the [Superpermutation Almanac](https://superpermutations.com), which is never written out in full. Applied to the segments of the record for 14 symbols, it produced W-0110 and W-0111, the records of November 2026.
+A superpermutation on n symbols is a word that contains every ordering of the symbols as n consecutive letters. Kabir Murjani holds the world record for 14 symbols with Aniate: [W-0111](https://superpermutations.com/w/W-0111), 93,904,779,622 letters, set on 17 November 2026 and the state of the art on the [Superpermutation Almanac](https://superpermutations.com). The solver finds short superpermutations, shortens existing ones, and reads and writes the Almanac's Detour format.
 
 ```python
 from aniate import superpermutations
@@ -88,7 +90,7 @@ from aniate import superpermutations
 word = superpermutations(5)                                # 153 letters, the shortest possible
 superpermutations(6, start="random")                       # the search, from a random order
 superpermutations.check(word)                              # every window scanned
-superpermutations.improve("W-0108.detour", seconds=600)    # exact chains on the segments of a Detour file
+superpermutations.improve("W-0111.detour", seconds=600)    # a Detour file
 superpermutations.write(word, "word.detour")               # the Almanac's format
 ```
 

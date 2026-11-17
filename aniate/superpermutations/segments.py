@@ -1,12 +1,5 @@
-"""Exact chains on the order of a word's segments, for words too large to hold as text.
+"""The order of the segments of a Detour word, and the search that improves it."""
 
-The word is cut at every real step of weight 4 or more, and the stretches between the cuts are the
-segments. A chain starts at a costly join and grows: each further cut is placed where an end or a start
-already set free fits in few letters. The stretches between the cuts are then put in their best order
-exactly (dynamic programming over subsets of stretches). A change that saves letters is kept, and one that
-costs nothing is kept too, so the search can move along a level. This is the move
-behind W-0110 and W-0111, the records for 14 symbols on the Superpermutation Almanac in November 2026.
-"""
 from __future__ import annotations
 
 import time

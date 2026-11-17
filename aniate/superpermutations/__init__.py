@@ -6,12 +6,11 @@
     word = superpermutations(5, start="random")           # the solver from the orderings in a random order
     superpermutations.check(word)                         # every window scanned
 
-    superpermutations.improve(word, seconds=60)           # exact chains on the orderings of a word
-    superpermutations.improve("W-0108.detour", seconds=600)   # exact chains on the segments of a Detour file
+    superpermutations.improve(word, seconds=60)           # a shorter word, when one is found
+    superpermutations.improve("W-0111.detour", seconds=600)   # the same, for a Detour file
 
-The solver cuts the word in a few places around a costly step and puts the pieces between the cuts in
-their best order exactly, by dynamic programming over subsets. Applied to the segments of the Almanac's
-record for 14 symbols, it found the records W-0110 and W-0111 in November 2026.
+Aniate holds the world record for superpermutations on 14 symbols: W-0111, 93,904,779,622 letters, set by
+Kabir Murjani on 17 November 2026, the state of the art on the Superpermutation Almanac.
 """
 from __future__ import annotations
 
